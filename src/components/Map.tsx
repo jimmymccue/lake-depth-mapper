@@ -1,4 +1,4 @@
-import { GoogleMap, useLoadScript, Marker } from "@react-google-maps/api";
+import { GoogleMap, Marker, useLoadScript } from "@react-google-maps/api";
 
 const containerStyle = {
   width: "100%",
@@ -6,8 +6,8 @@ const containerStyle = {
 };
 
 const center = {
-  lat: 37.7749, // example: San Francisco
-  lng: -122.419,
+  lat: 39.9611755, // example: CSCC
+  lng: -82.9987942,
 };
 
 const Map: React.FC = () => {
