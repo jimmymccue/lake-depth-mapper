@@ -27,7 +27,7 @@ const Home = () => {
   const handleDepthSubmit = (depth: number) => {
     setLastDepth(depth);
 
-    // Update coordinates again on submit (optional)
+    // Optionally update coordinates again on submit
     if (!navigator.geolocation) return;
 
     navigator.geolocation.getCurrentPosition(
@@ -49,14 +49,18 @@ const Home = () => {
 
         {lastDepth !== null && (
           <p className="mt-4 text-gray-700">
-            Last recorded depth: <span className="font-semibold text-blue-600">{lastDepth} ft</span>
+            Last recorded depth:{" "}
+            <span className="font-semibold text-blue-600">{lastDepth} ft</span>
           </p>
         )}
 
         {coords && (
-            <p className="mt-2 text-gray-600">
-            Coordinates: <span className="font-medium">{coords.lat.toFixed(6)}, {coords.lng.toFixed(6)}</span>
-            </p>
+          <p className="mt-2 text-gray-600">
+            Coordinates:{" "}
+            <span className="font-medium">
+              {coords.lat.toFixed(6)}, {coords.lng.toFixed(6)}
+            </span>
+          </p>
         )}
 
         {error && <p className="mt-3 text-red-500">{error}</p>}
@@ -64,7 +68,7 @@ const Home = () => {
 
       {coords && (
         <div className="w-full max-w-3xl h-[400px] rounded-2xl overflow-hidden shadow-md">
-          <Map coordinates={coords} />
+          <Map coordinates={coords} lastDepth={lastDepth} />
         </div>
       )}
     </div>
