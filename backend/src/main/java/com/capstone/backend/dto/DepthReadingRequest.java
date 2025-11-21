@@ -1,6 +1,5 @@
 package com.capstone.backend.dto;
 
-import java.time.LocalDateTime;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
@@ -18,21 +17,16 @@ public class DepthReadingRequest {
     private Double latitude;
 
     @NotNull(message = "Longitude is required")
-    @Min(value = -180, message = "Longitude must be <=-180")
+    @Min(value = -180, message = "Longitude must be >=-180")
     @Max(value = 180, message = "Longitude myst be <= 180")
     private Double longitude;
 
-    @NotNull(message = "Recorded time is required")
-    private LocalDateTime recordedAt;
-
     public DepthReadingRequest() {}
 
-    public DepthReadingRequest(Integer depthFeet, Double latitude, Double longitude,
-            LocalDateTime recordedAt) {
+    public DepthReadingRequest(Integer depthFeet, Double latitude, Double longitude) {
         this.depthFeet = depthFeet;
         this.latitude = latitude;
         this.longitude = longitude;
-        this.recordedAt = recordedAt;
     }
 
     public Integer getDepthFeet() {
@@ -56,15 +50,7 @@ public class DepthReadingRequest {
     }
 
     public void setLongitude(Double longitude) {
-        this.longitude = latitude;
-    }
-
-    public LocalDateTime getRecordedAt() {
-        return recordedAt;
-    }
-
-    public void setRecordedAt(LocalDateTime recordedAt) {
-        this.recordedAt = recordedAt;
+        this.longitude = longitude;
     }
 
 }
