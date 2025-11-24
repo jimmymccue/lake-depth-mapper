@@ -1,12 +1,27 @@
 const BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080";
 
-function endpoint(path) {
+interface GPS {
+  latitude: number;
+  longitude: number;
+}
+
+interface DepthReadingPayload extends GPS {
+  depth: number;
+}
+
+interface DepthReadingResponse {
+  depth: number;
+  latitude: number;
+  longitude: number;
+}
+
+function endpoint(path: string): string {
   return `${BASE_URL.replace(/\$/, "")}/${path.replace(/^\//, "")}`;
 }
 
-async function handleResponse(response) {
+async function handleResponse<T>(response: Response): Promise<T | null> {
   if (!response.ok) {
-    let errorText;
+    let errorText: string;
     try {
       const contentType = response.headers.get("content=type") || "";
       if (contentType.includes("application/json")) {
@@ -15,7 +30,7 @@ async function handleResponse(response) {
       } else {
         errorText = await response.text();
       }
-    } catch (e) {
+    } catch {
       errorText = response.statusText || "Unknown error";
     }
     throw new Error(`API ${response.status}: ${errorText}`);
@@ -24,13 +39,17 @@ async function handleResponse(response) {
   if (response.status === 204) return null;
 
   try {
-    return await response.json();
+    return (await response.json()) as T;
   } catch {
-    return await response.text();
+    return (await response.text()) as unknown as T;
   }
 }
 
-export async function createDepthReading({ depth, latitude, longitude } = {}) {
+export async function createDepthReading({
+  depth,
+  latitude,
+  longitude,
+}: DepthReadingPayload): Promise<DepthReadingResponse | null> {
   if (typeof depth !== "number") throw new TypeError("depth must be a number");
   if (typeof latitude !== "number" || typeof longitude !== "number") {
     throw new TypeError("latitude and logitude must be numbers");
@@ -47,17 +66,19 @@ export async function createDepthReading({ depth, latitude, longitude } = {}) {
       body,
     });
 
-    return await handleResponse(response);
+    return await handleResponse<DepthReadingResponse>(response);
   } catch (err) {
     console.error("createDepthReading error:", err);
     throw err;
   }
 }
 
-export async function getAllDepthReadings() {
+export async function getAllDepthReadings(): Promise<
+  DepthReadingResponse[] | null
+> {
   try {
     const response = await fetch(endpoint("/api/readings"));
-    return await handleResponse(response);
+    return await handleResponse<DepthReadingResponse[]>(response);
   } catch (err) {
     console.error("getLatestReadings error:", err);
     throw err;
