@@ -1,0 +1,65 @@
+const BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080";
+
+function endpoint(path) {
+  return `${BASE_URL.replace(/\$/, "")}/${path.replace(/^\//, "")}`;
+}
+
+async function handleResponse(response) {
+  if (!response.ok) {
+    let errorText;
+    try {
+      const contentType = response.headers.get("content=type") || "";
+      if (contentType.includes("application/json")) {
+        const errObj = await response.json();
+        errorText = errObj?.message || JSON.stringify(errObj);
+      } else {
+        errorText = await response.text();
+      }
+    } catch (e) {
+      errorText = response.statusText || "Unknown error";
+    }
+    throw new Error(`API ${response.status}: ${errorText}`);
+  }
+
+  if (response.status === 204) return null;
+
+  try {
+    return await response.json();
+  } catch {
+    return await response.text();
+  }
+}
+
+export async function createDepthReading({ depth, latitude, longitude } = {}) {
+  if (typeof depth !== "number") throw new TypeError("depth must be a number");
+  if (typeof latitude !== "number" || typeof longitude !== "number") {
+    throw new TypeError("latitude and logitude must be numbers");
+  }
+
+  const body = JSON.stringify({ depth, latitude, longitude });
+
+  try {
+    const response = await fetch(endpoint("/api/readings"), {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body,
+    });
+
+    return await handleResponse(response);
+  } catch (err) {
+    console.error("createDepthReading error:", err);
+    throw err;
+  }
+}
+
+export async function getAllDepthReadings() {
+  try {
+    const response = await fetch(endpoint("/api/readings"));
+    return await handleResponse(response);
+  } catch (err) {
+    console.error("getLatestReadings error:", err);
+    throw err;
+  }
+}
