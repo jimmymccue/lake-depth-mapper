@@ -1,11 +1,13 @@
 // MockHome.tsx
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import LakeDepthForm from "../components/LakeDepthForm";
 import Map from "../components/Map";
 
 const MockHome = () => {
   const [lastDepth, setLastDepth] = useState<number | null>(null);
-  const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null);
+  const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(
+    null
+  );
 
   // Start at the chosen pond coordinates
   useEffect(() => {
@@ -27,7 +29,7 @@ const MockHome = () => {
       ];
 
       // Cycle through offsets
-      const step = lastDepth !== null ? lastDepth % offsets.length : 0;
+      const step = depth % offsets.length;
       return {
         lat: prev.lat + offsets[step].lat,
         lng: prev.lng + offsets[step].lng,
@@ -37,10 +39,18 @@ const MockHome = () => {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-6">
-      <h1 className="text-3xl font-bold text-gray-800 mb-6">Lake Depth Tracker (Mock)</h1>
+      <h1 className="text-3xl font-bold text-gray-800 mb-6">
+        Lake Depth Tracker (Mock)
+      </h1>
 
       <div className="w-full max-w-md bg-white shadow-lg rounded-2xl p-6 mb-8">
-        <LakeDepthForm onSubmit={handleDepthSubmit} />
+        {coords && (
+          <LakeDepthForm
+            latitude={coords.lat}
+            longitude={coords.lng}
+            onSubmit={handleDepthSubmit}
+          />
+        )}
 
         {lastDepth !== null && (
           <p className="mt-4 text-gray-700">

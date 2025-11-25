@@ -23,7 +23,7 @@ async function handleResponse<T>(response: Response): Promise<T | null> {
   if (!response.ok) {
     let errorText: string;
     try {
-      const contentType = response.headers.get("content=type") || "";
+      const contentType = response.headers.get("content-type") || "";
       if (contentType.includes("application/json")) {
         const errObj = await response.json();
         errorText = errObj?.message || JSON.stringify(errObj);
@@ -58,7 +58,14 @@ export async function createDepthReading({
   const body = JSON.stringify({ depth, latitude, longitude });
 
   try {
-    const response = await fetch(endpoint("/api/readings"), {
+    console.log("Sending payload to backend:", {
+      depth,
+      latitude,
+      longitude,
+      url: endpoint("/api/depth-readings/"),
+    });
+
+    const response = await fetch(endpoint("/api/depth-readings/"), {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -77,7 +84,7 @@ export async function getAllDepthReadings(): Promise<
   DepthReadingResponse[] | null
 > {
   try {
-    const response = await fetch(endpoint("/api/readings"));
+    const response = await fetch(endpoint("/api/depth-readings"));
     return await handleResponse<DepthReadingResponse[]>(response);
   } catch (err) {
     console.error("getLatestReadings error:", err);

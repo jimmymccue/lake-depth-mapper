@@ -1,5 +1,5 @@
 // import Home from './pages/Home'
-import DemoHome from './pages/DemoHome'
+import DemoHome from "./pages/DemoHome";
 
 function App() {
   return (
@@ -7,7 +7,7 @@ function App() {
       {/* <Home /> */}
       <DemoHome />
     </div>
-  )
+  );
 }
 
-export default App
+export default App;

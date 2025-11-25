@@ -26,18 +26,6 @@ const Home = () => {
 
   const handleDepthSubmit = (depth: number) => {
     setLastDepth(depth);
-
-    // Optionally update coordinates again on submit
-    if (!navigator.geolocation) return;
-
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        const { latitude, longitude } = position.coords;
-        setCoords({ lat: latitude, lng: longitude });
-      },
-      (err) => setError(err.message),
-      { enableHighAccuracy: true, timeout: 10000 }
-    );
   };
 
   return (
@@ -45,22 +33,12 @@ const Home = () => {
       <h1 className="text-3xl font-bold text-gray-800 mb-6">Lake Depth Tracker</h1>
 
       <div className="w-full max-w-md bg-white shadow-lg rounded-2xl p-6 mb-8">
-        <LakeDepthForm onSubmit={handleDepthSubmit} />
-
-        {lastDepth !== null && (
-          <p className="mt-4 text-gray-700">
-            Last recorded depth:{" "}
-            <span className="font-semibold text-blue-600">{lastDepth} ft</span>
-          </p>
-        )}
-
         {coords && (
-          <p className="mt-2 text-gray-600">
-            Coordinates:{" "}
-            <span className="font-medium">
-              {coords.lat.toFixed(6)}, {coords.lng.toFixed(6)}
-            </span>
-          </p>
+          <LakeDepthForm
+            latitude={coords.lat}
+            longitude={coords.lng}
+            onSubmit={handleDepthSubmit}
+          />
         )}
 
         {error && <p className="mt-3 text-red-500">{error}</p>}

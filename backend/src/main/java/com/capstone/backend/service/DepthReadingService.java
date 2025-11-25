@@ -24,13 +24,13 @@ public class DepthReadingService {
     // Creates a new DepthReading.
     @Transactional
     public DepthReadingResponse createDepthReading(DepthReadingRequest request) {
-        if (request.getDepthFeet() <= 0 || request.getDepthFeet() > 1000) {
+        if (request.getDepth() <= 0 || request.getDepth() > 1000) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "Depth must be between 1 and 1000 feet");
         }
 
         DepthReading reading = new DepthReading();
-        reading.setDepthFeet(request.getDepthFeet());
+        reading.setDepthFeet(request.getDepth());
         reading.setLatitude(request.getLatitude());
         reading.setLongitude(request.getLongitude());
         reading.setRecordedAt(LocalDateTime.now());
@@ -68,12 +68,12 @@ public class DepthReadingService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                         "DepthReading with ID " + id + " not found"));
 
-        if (request.getDepthFeet() <= 0 || request.getDepthFeet() > 1000) {
+        if (request.getDepth() <= 0 || request.getDepth() > 1000) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "Depth must be between 1 and 1000 feet");
         }
 
-        reading.setDepthFeet(request.getDepthFeet());
+        reading.setDepthFeet(request.getDepth());
         reading.setLatitude(request.getLatitude());
         reading.setLongitude(request.getLongitude());
         reading.setRecordedAt(LocalDateTime.now());

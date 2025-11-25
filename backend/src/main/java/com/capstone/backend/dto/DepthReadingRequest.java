@@ -9,7 +9,7 @@ public class DepthReadingRequest {
     @NotNull(message = "Depth is required")
     @Min(value = 0, message = "Depth cannot be negative")
     @Max(value = 1000, message = "Depth cannot exceed 1000 feet")
-    private Integer depthFeet;
+    private Integer depth;
 
     @NotNull(message = "Latitude is required")
     @Min(value = -90, message = "Latitude must be >= -90")
@@ -23,18 +23,18 @@ public class DepthReadingRequest {
 
     public DepthReadingRequest() {}
 
-    public DepthReadingRequest(Integer depthFeet, Double latitude, Double longitude) {
-        this.depthFeet = depthFeet;
+    public DepthReadingRequest(Integer depth, Double latitude, Double longitude) {
+        this.depth = depth;
         this.latitude = latitude;
         this.longitude = longitude;
     }
 
-    public Integer getDepthFeet() {
-        return depthFeet;
+    public Integer getDepth() {
+        return depth;
     }
 
-    public void setDepthFeet(Integer depthFeet) {
-        this.depthFeet = depthFeet;
+    public void setDepth(Integer depth) {
+        this.depth = depth;
     }
 
     public Double getLatitude() {
