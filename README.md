@@ -15,7 +15,12 @@ The application consists of a React frontend and a Spring Boot backend, supporte
 - [Installation](#installation)
 - [Frontend Overview](#frontend-overview)
 - [Backend Overview](#backend-overview)
+- [H2 Console:](#h2-console)
+- [Environment Variables](#environment-variables)
 - [API Endpoints](#api-endpoints)
+- [Example Request Bodies](#example-request-bodies)
+- [Sample cURL \& Postman Calls](#sample-curl--postman-calls)
+- [Troubleshooting](#troubleshooting)
 - [Project Status](#project-status)
 - [Author](#author)
 
@@ -81,7 +86,7 @@ These depth points will later support contour map generation.
 
 ---
 
-# Installation
+## Installation
 
 Clone the repository:
 
@@ -92,7 +97,7 @@ cd LakeMapper # or whatever folder name you want locally
 
 ---
 
-# Frontend Overview
+## Frontend Overview
 
 ### Install dependencies:
 
@@ -113,7 +118,34 @@ The app runs on:
 http://localhost:5173
 ```
 
-### Environment Variables
+## Backend Overview
+
+### Run the backend:
+
+```
+cd backend
+mvn spring-boot:run
+```
+
+Backend runs at:
+
+```
+http://localhost:8080
+```
+
+## H2 Console:
+
+```
+http://localhost:8080/h2-console
+```
+
+### Typical Config:
+
+JDBC URL: jdbc:h2:mem:lake_mapper_db
+User: admin
+Password: (empty)
+
+## Environment Variables
 
 Create:
 
@@ -134,40 +166,10 @@ The frontend currently:
 - Accepts depth input
 - Retrieves coordinates via Google Maps
 - Displays results locally
-- Does _not yet_ submit data to backend
 
 ---
 
-# Backend Overview
-
-### Run the backend:
-
-```
-cd backend
-mvn spring-boot:run
-```
-
-Backend runs at:
-
-```
-http://localhost:8080
-```
-
-### H2 Console
-
-```
-http://localhost:8080/h2-console
-```
-
-Typical config:
-
-- JDBC URL: `jdbc:h2:mem:testdb`
-- User: `admin`
-- Password: _(empty)_
-
----
-
-# API Endpoints
+## API Endpoints
 
 Base URL:
 
@@ -175,37 +177,77 @@ Base URL:
 /api/depth-readings
 ```
 
-### **POST** `/api/depth-readings`
+### **POST** `/api/depth-readings` - Create a new depth reading.
 
-Create a new depth reading.
+### **GET** `/api/depth-readings` - Get all depth readings.
 
-### **GET** `/api/depth-readings`
+### **GET** `/api/depth-readings/{id}` - Get a reading by ID.
 
-Get all depth readings.
+### **PUT** `/api/depth-readings/{id}` - Update a reading.
 
-### **GET** `/api/depth-readings/{id}`
-
-Get a reading by ID.
-
-### **PUT** `/api/depth-readings/{id}`
-
-Update a reading.
-
-### **DELETE** `/api/depth-readings/{id}`
-
-Delete a reading.
+### **DELETE** `/api/depth-readings/{id}` - Delete a reading.
 
 ---
+
+## Example Request Bodies
+
+### POST /api/depth-readings/
+
+{
+"depth": 12.5,
+"latitude": 40.123456,
+"longitude": -83.987654
+}
+
+### PUT /api/depth-readings/{id}
+
+{
+"depth": 15.2,
+"latitude": 40.111111,
+"longitude": -83.999999
+}
+
+## Sample cURL & Postman Calls
+
+curl -X POST http://localhost:8080/api/depth-readings \
+-H "Content-Type: application/json" \
+-d "{ \"depth\": 12.5, \"latitude\": 40.12345, \"longitude\": -83.98765 }"
+
+### Get all readings (GET)
+
+curl http://localhost:8080/api/depth-readings
+
+### Delete reading (GET)
+
+curl -X DELETE http://localhost:8080/api/depth-readings/1
+
+## Troubleshooting
+
+### Frontend not loading Google Maps?
+
+- Ensure your API key is valid
+- Ensure billing is enabled in Google Cloud
+- Ensure the Maps JavaScript API is enabled
+
+### H2 console shows connection failure?
+
+- Confirm JDBC URL is exactly: `jdbc:h2:mem:lake_mapper_db`
+- Ensure backend is running
+
+### Frontend cannot reach backend?
+
+- Confirm backend is running at `localhost:8080`
+- If you changed ports, update frontend API base URL
 
 # Project Status
 
 - Frontend UI complete for local capture of depth + coordinates
 - Backend CRUD fully operational
-- Frontend/backend integration is the next development step
+- Frontend/backend integration complete and functioning locally
 
 Lake Mapper is actively evolving and will grow into a full lake contour generation platform.
 
-## Author
+# Author
 
 **Jimmy M. McCue III**  
 GitHub: [jimmymccue](https://github.com/jimmymccue)  
