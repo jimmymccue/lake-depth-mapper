@@ -1,10 +1,16 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import LakeDepthForm from "../components/LakeDepthForm";
 import Map from "../components/Map";
+import type { DepthReadingResponse } from "../services/depthService";
+import { getAllDepthReadings } from "../services/depthService";
+import ReadingList from "../components/ReadingList";
 
 const Home = () => {
   const [lastDepth, setLastDepth] = useState<number | null>(null);
-  const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null);
+  const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(
+    null
+  );
+  const [readings, setReadings] = useState<DepthReadingResponse[]>([]);
   const [error, setError] = useState<string | null>(null);
 
   // Fetch current location on app load
@@ -24,13 +30,25 @@ const Home = () => {
     );
   }, []);
 
-  const handleDepthSubmit = (depth: number) => {
+  const handleDepthSubmit = async (depth: number) => {
     setLastDepth(depth);
+    await refreshReadings();
+  };
+
+  const refreshReadings = async () => {
+    try {
+      const data = await getAllDepthReadings();
+      setReadings(data ?? []);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-6">
-      <h1 className="text-3xl font-bold text-gray-800 mb-6">Lake Depth Tracker</h1>
+      <h1 className="text-3xl font-bold text-gray-800 mb-6">
+        Lake Depth Tracker
+      </h1>
 
       <div className="w-full max-w-md bg-white shadow-lg rounded-2xl p-6 mb-8">
         {coords && (
@@ -42,6 +60,9 @@ const Home = () => {
         )}
 
         {error && <p className="mt-3 text-red-500">{error}</p>}
+      </div>
+      <div>
+        <ReadingList readings={readings} />
       </div>
 
       {coords && (

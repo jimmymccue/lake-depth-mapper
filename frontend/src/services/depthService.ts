@@ -9,8 +9,8 @@ interface DepthReadingPayload extends GPS {
   depth: number;
 }
 
-interface DepthReadingResponse {
-  depth: number;
+export interface DepthReadingResponse {
+  depthFeet: number;
   latitude: number;
   longitude: number;
 }
@@ -80,14 +80,16 @@ export async function createDepthReading({
   }
 }
 
-export async function getAllDepthReadings(): Promise<
-  DepthReadingResponse[] | null
-> {
+export async function getAllDepthReadings(): Promise<DepthReadingResponse[] | null> {
   try {
-    const response = await fetch(endpoint("/api/depth-readings"));
-    return await handleResponse<DepthReadingResponse[]>(response);
+    const response = await fetch(endpoint("/api/depth-readings/"));
+    const data = await handleResponse<DepthReadingResponse[]>(response);
+
+    console.log("Fetched depth readings:", data); // <-- log here
+    return data;
   } catch (err) {
-    console.error("getLatestReadings error:", err);
+    console.error("getAllDepthReadings error:", err);
     throw err;
   }
 }
+

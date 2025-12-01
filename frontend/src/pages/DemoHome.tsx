@@ -1,20 +1,24 @@
-// MockHome.tsx
 import { useEffect, useState } from "react";
 import LakeDepthForm from "../components/LakeDepthForm";
 import Map from "../components/Map";
+import ReadingList from "../components/ReadingList";
+import type { DepthReadingResponse } from "../services/depthService";
+import { getAllDepthReadings } from "../services/depthService";
 
 const MockHome = () => {
   const [lastDepth, setLastDepth] = useState<number | null>(null);
   const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(
     null
   );
+  const [readings, setReadings] = useState<DepthReadingResponse[]>([]);
 
   // Start at the chosen pond coordinates
   useEffect(() => {
     setCoords({ lat: 39.847885, lng: -83.185597 });
+    refreshReadings();
   }, []);
 
-  const handleDepthSubmit = (depth: number) => {
+  const handleDepthSubmit = async (depth: number) => {
     setLastDepth(depth);
 
     // Move the mock coordinates slightly for the next submission
@@ -35,6 +39,20 @@ const MockHome = () => {
         lng: prev.lng + offsets[step].lng,
       };
     });
+    await refreshReadings();
+  };
+
+  const refreshReadings = async () => {
+    try {
+      const data = await getAllDepthReadings();
+      setReadings(data ?? []);
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        console.error(err.message);
+      } else {
+        console.error("Unkown error occured");
+      }
+    }
   };
 
   return (
@@ -67,6 +85,10 @@ const MockHome = () => {
             </span>
           </p>
         )}
+      </div>
+
+      <div>
+        <ReadingList readings={readings} />
       </div>
 
       {coords && (

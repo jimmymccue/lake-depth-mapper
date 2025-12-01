@@ -56,6 +56,10 @@ const LakeDepthForm: FC<LakeDepthFormProps> = ({
       onSubmit(depthNum);
       setSuccessMessage("Depth reading successfully created!");
       setDepth("");
+
+    //   const updatedReadings = await getAllDepthReadings();
+    //   setReadings(updatedReadings ?? []);
+
     } catch (err: unknown) {
       if (err instanceof Error) {
         setServerError(err.message);
